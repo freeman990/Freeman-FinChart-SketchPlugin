@@ -1,0 +1,24 @@
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "script.js",
+      "name" : "Freeman's Graph",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ],
+    "title" : "Freeman's Graph"
+  },
+  "identifier" : "com.example.sketch.4bae7db0-a3a4-4348-9cd8-112dd1a84e07",
+  "version" : "1.0",
+  "description" : "",
+  "authorEmail" : "",
+  "name" : "Freeman's Graph"
+}
