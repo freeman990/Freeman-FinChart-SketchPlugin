@@ -1,24 +1,24 @@
 {
-  "author" : "",
+  "author" : "Freeman Sun",
   "commands" : [
     {
       "script" : "script.js",
-      "name" : "Freeman's Graph",
+      "name" : "Freeman's FinGraph",
       "handlers" : {
         "run" : "onRun"
       },
-      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+      "identifier" : "com.freeman.sketch.fin-graph"
     }
   ],
   "menu" : {
     "items" : [
-      "com.bohemiancoding.sketch.runscriptidentifier"
+      "com.freeman.sketch.fin-graph"
     ],
-    "title" : "Freeman's Graph"
+    "title" : "Freeman's FinGraph"
   },
-  "identifier" : "com.example.sketch.4bae7db0-a3a4-4348-9cd8-112dd1a84e07",
-  "version" : "1.0",
-  "description" : "",
-  "authorEmail" : "",
-  "name" : "Freeman's Graph"
+  "identifier" : "com.freeman.sketch.fin-graph",
+  "version" : "1.0.0",
+  "description" : "Draw various of fincal graph in the sketch(CandleStick for now), with built-in real data.",
+  "authorEmail" : "freeman990@gmail.com",
+  "name" : "Freeman's FinGraph"
 }
