@@ -8,11 +8,20 @@
         "run" : "onRun"
       },
       "identifier" : "com.freeman.sketch.fin-graph"
+    },
+    {
+      "script" : "test.js",
+      "name" : "Test",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.freeman.sketch.fin-graph-test"
     }
   ],
   "menu" : {
     "items" : [
-      "com.freeman.sketch.fin-graph"
+      "com.freeman.sketch.fin-graph",
+      "com.freeman.sketch.fin-graph-test"
     ],
     "title" : "Freeman's FinGraph"
   },
