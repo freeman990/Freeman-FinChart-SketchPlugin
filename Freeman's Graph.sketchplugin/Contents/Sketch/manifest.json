@@ -1,13 +1,27 @@
 {
+  "identifier" : "com.freeman.sketch.fin-chart",
+  "version" : "1.0.0",
+  "description" : "Draw various of finacal chart(CandleStick & line chart for now) in the ketch, with built-in real data.",
+  "authorEmail" : "freeman990@gmail.com",
+  "name" : "Freeman's FinChart",
   "author" : "Freeman Sun",
+
   "commands" : [
     {
-      "script" : "script.js",
-      "name" : "Freeman's FinGraph",
+      "script" : "chart-candle.js",
+      "name" : "K线图 (CandleStick Chart)",
       "handlers" : {
         "run" : "onRun"
       },
-      "identifier" : "com.freeman.sketch.fin-graph"
+      "identifier" : "com.freeman.sketch.fin-chart"
+    },
+    {
+      "script" : "chart-line.js",
+      "name" : "分时图 (Line Chart)",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.freeman.sketch.fin-chart-timeline"
     },
     {
       "script" : "test.js",
@@ -15,19 +29,17 @@
       "handlers" : {
         "run" : "onRun"
       },
-      "identifier" : "com.freeman.sketch.fin-graph-test"
+      "identifier" : "com.freeman.sketch.fin-chart-test"
     }
   ],
+
   "menu" : {
     "items" : [
-      "com.freeman.sketch.fin-graph",
-      "com.freeman.sketch.fin-graph-test"
+      "com.freeman.sketch.fin-chart",
+      "com.freeman.sketch.fin-chart-timeline",
+      "com.freeman.sketch.fin-chart-test"
     ],
-    "title" : "Freeman's FinGraph"
-  },
-  "identifier" : "com.freeman.sketch.fin-graph",
-  "version" : "1.0.0",
-  "description" : "Draw various of fincal graph in the sketch(CandleStick for now), with built-in real data.",
-  "authorEmail" : "freeman990@gmail.com",
-  "name" : "Freeman's FinGraph"
+    "title" : "Freeman's FinChart"
+  }
+
 }
