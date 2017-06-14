@@ -1,21 +1,13 @@
 //===============================================
 //==========    Create a new group    ===========
 //===============================================
-function newGroup(name, parent){
+function addGroup(name, parent){
     name = name||"Group";
-    parent = parent || "";
-    
-    
+
     var group = MSLayerGroup.new();
     group.setName(name);
-    
-    if(parent == ""){
-        doc.currentPage().addLayers([group]);
-    }else{
-        parent.addLayers([group]);
-    }
-    
-    
+
+    parent.addLayers([group]);
     return group;
 }
 
@@ -43,7 +35,7 @@ function drawBox(x, y, width, height, color, parent, radius, name) {
     //Add the newly created layer to selection to update frame & make next draw pos right
     //doc.currentPage().deselectAllLayers();
     rectLayer.setIsSelected(true);
-    
+
     return(rectLayer);
 }
 
@@ -71,6 +63,8 @@ function drawLine(dotAry, color, parent, name)
     layerStyle.setPosition(0);
 
     parent.addLayers([lineLayer]);
+
+    return lineLayer;
 }
 
 //===============================================
@@ -80,7 +74,7 @@ function drawLine(dotAry, color, parent, name)
 function getMaxNum(ary, direction, length){
     direction = direction || "max";
     length = length || ary.length;
-    var op = ary[0];	
+    var op = ary[0];
 
     if(direction == "min"){
         for(var i=0; i<length; i++){
@@ -128,4 +122,12 @@ function getAvgNum(ary, index, avg)
     }else{
         return 0;
     }
+}
+
+function valueToPosY(value, vMax, vMin, height){
+    var posY;
+
+    posY = height - ( ( value - vMin ) / ( vMax - vMin ) * height );
+
+    return Math.round(posY);
 }

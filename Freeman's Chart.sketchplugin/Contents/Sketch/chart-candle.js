@@ -10,8 +10,8 @@ var onRun = function(context) {
 
     var doc = context.document;
     var page = doc.currentPage();
-    var artb = page.currentArtboard();  
-    
+    var artb = page.currentArtboard();
+
     var drawArea1 = {w:1008, h:188};
     var color_rise = "#F64843";
     var color_fall = "#5C9F34";
@@ -84,20 +84,20 @@ var onRun = function(context) {
         barGap = newBarGap;
         barNum = newBarNum;
 
-        var CHART_wrapper = newGroup("K线图", context.document.currentPage().currentArtboard());
-        var CHART = newGroup("图表", CHART_wrapper);
-        var part_rise = newGroup("上涨", CHART);
-        var part_fall = newGroup("下跌", CHART);
-        var stick_rise = newGroup("线", part_rise);
-        var stick_fall = newGroup("线", part_fall);
-        var bar_rise = newGroup("块", part_rise);
-        var bar_fall= newGroup("块", part_fall);
+        var CHART_wrapper = addGroup("K线图", context.document.currentPage().currentArtboard());
+        var CHART = addGroup("图表", CHART_wrapper);
+        var part_rise = addGroup("上涨", CHART);
+        var part_fall = addGroup("下跌", CHART);
+        var stick_rise = addGroup("线", part_rise);
+        var stick_fall = addGroup("线", part_fall);
+        var bar_rise = addGroup("块", part_rise);
+        var bar_fall= addGroup("块", part_fall);
 
         if(barNum >= data.length){
             dataStartID = 0;
         }
         else{
-            dataStartID = data.length - barNum;    
+            dataStartID = data.length - barNum;
         }
 
         var valueBoundaryTestAry = [];
@@ -143,13 +143,13 @@ var onRun = function(context) {
         {
             var dataItem = data[i];
             var order = i-dataStartID;
-            
+
             var newBY = Math.round(dataDrawH - (dataItem[indexOpen] - priceMin) * yScale);
             var newSY = Math.round(dataDrawH - (dataItem[indexHigh] - priceMin) * yScale);
 
             var newBX = Math.round(order * (barWidth+barGap));
             var newSX = Math.floor(barWidth/2) + newBX;
-            
+
             var newBH = Math.round((dataItem[indexClose] - dataItem[indexOpen]) * yScale*-1);
             if(newBH == 0){
                 newBH = 1;
@@ -202,13 +202,13 @@ var onRun = function(context) {
     //==============================================
 
 
-   
+
     /*
     function drawLabelY(valMin, valMax, num, drawHeight){
         var labelContainer = new createjs.Container();
 
         var labelRange = valMax - valMin;
-        for(var i=0; i<num; i++){		
+        for(var i=0; i<num; i++){
             var newLabel = drawLabel(0, 0, (valMin+i*labelRange/num).toFixed(2));
 
             if(i == 0){
@@ -220,10 +220,9 @@ var onRun = function(context) {
             labelContainer.addChild(newLabel);
         }
 
-        labelContainer.name = "labelY";	
+        labelContainer.name = "labelY";
         return labelContainer;
     }
     */
-    
-};
 
+};
