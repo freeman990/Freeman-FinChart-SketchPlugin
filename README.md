@@ -1,14 +1,16 @@
 # Freeman's FinChart SketchPlugin
-Financal Chart tool for Sketch
+Financial chart tool for Sketch
 
-A good UX designer should always design pages with real data, this was really painful when your work involve a lot of charts, you need to see the actual charts in your design to adjust color, gap or such, but drawing a candlestick or a real-looking line chart manually is real waste of time, so here comes the rescue.
+A good UX designer should always design pages with real data, this idea gives real pain when your work involve a lot of charts. A designer need to lay eyes on actual charts to adjust size, gap, color or such, but drawing a candlestick or a realistic-looking line chart manually is real waste of time, so here comes the rescue.
 
 ## Preview:
 ![Preview](https://github.com/freeman990/Freeman-FinChart-SketchPlugin/blob/master/Others/preview.gif)
 
 ## Feature:
-- Fully editable financial chart.
-- Customizable Candlestick showing candle number and gaps
+- Draw Candlestick chart base on real data
+- Draw Line chart base on real data
+- Fully editable output with separated layers
+- Customizable settings for gap size and total number for candlestick chart
 
 ## TODO:
 - Grid line & footnote for charts
