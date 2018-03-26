@@ -30,7 +30,6 @@ onRun = function(context)
     {
 		//No artboard selected, giving defalut size
 		drawArea = {w:800, h:600};
-		artb = addArtboard(800, 600, context.document.currentPage())
     }else {
 		//Artboard selected, use as drawArea
         drawArea = {w:artb.frame().width(), h:artb.frame().height()};

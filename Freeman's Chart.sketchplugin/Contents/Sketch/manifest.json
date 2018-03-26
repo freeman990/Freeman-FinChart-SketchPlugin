@@ -1,7 +1,7 @@
 {
   "identifier" : "com.freeman.sketch.fin-chart",
-  "version" : "1.1.0",
-  "description" : "Draw candlestick chart with options and line chart with volume in Sketch, with built-in real data.",
+  "version" : "1.2.0",
+  "description" : "Draw CandleStick & line chart in the Sketch, with built-in real data.",
   "authorEmail" : "freeman990@gmail.com",
   "name" : "Freeman's FinChart",
   "author" : "Freeman Sun",
@@ -9,7 +9,7 @@
   "commands" : [
     {
       "script" : "chart-candle.js",
-      "name" : "K线图 (Candlestick Chart)",
+      "name" : "K线图 (CandleStick Chart)",
       "handlers" : {
         "run" : "onRun"
       },
@@ -36,7 +36,8 @@
   "menu" : {
     "items" : [
       "com.freeman.sketch.fin-chart",
-      "com.freeman.sketch.fin-chart-timeline"
+      "com.freeman.sketch.fin-chart-timeline",
+      "com.freeman.sketch.fin-chart-test"
     ],
     "title" : "Freeman's FinChart"
   }

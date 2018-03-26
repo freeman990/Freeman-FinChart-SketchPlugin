@@ -8,9 +8,11 @@ var onRun = function(context) {
     log("=======================================================================");
     log("=======================================================================");
 
-    var artb;
+    var doc = context.document;
+    var page = doc.currentPage();
+    var artb = page.currentArtboard();
 
-    var drawArea = {w:0, h:0};
+    var drawArea1 = {w:1008, h:188};
     var color_rise = "#F64843";
     var color_fall = "#5C9F34";
     var color_grid = "#2d2d2d";
@@ -34,13 +36,20 @@ var onRun = function(context) {
     var dataStartID = 0;
     var drawAverageLine = true;
 
+
     xOffset = 0//Math.max(labelK.getBounds().width, labelV.getBounds().width) + 2;
+
+    if(artb != undefined)
+    {
+        drawArea1 = {w:artb.frame().width(), h:artb.frame().height()}
+    }
+
 
     var dialog = COSAlertWindow.alloc().init();
     iconImage = NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("test.png").path());
     dialog.setIcon(iconImage);
     dialog.setMessageText("创建K线图");
-    dialog.setInformativeText("图表长宽取决于所选 Artboard 长宽");
+    dialog.setInformativeText("根据所选 Artboard 尺寸，按以下参数生成 K 线图。\n注意：为了像素对齐所以生成图表宽度可能不满或超过画布宽度。");
 
     //Main UI
     dialog.addTextLabelWithValue("柱间距(px): ");
@@ -68,16 +77,6 @@ var onRun = function(context) {
     var responseCode = dialog.runModal();
 
     if (responseCode == "1000"){
-        artb = context.document.currentPage().currentArtboard();
-        if(artb == undefined)
-        {
-    		//No artboard selected, giving defalut size
-    		drawArea = {w:800, h:600};
-    		artb = addArtboard(800, 600, context.document.currentPage())
-        }else {
-    		//Artboard selected, use as drawArea
-            drawArea = {w:artb.frame().width(), h:artb.frame().height()};
-        }
 
         var newBarGap = parseFloat(barGapSetting.stringValue());
         var newBarNum = parseFloat(barNumSetting.stringValue());
@@ -85,7 +84,7 @@ var onRun = function(context) {
         barGap = newBarGap;
         barNum = newBarNum;
 
-        var CHART_wrapper = addGroup("K线图", artb);
+        var CHART_wrapper = addGroup("K线图", context.document.currentPage().currentArtboard());
         var CHART = addGroup("图表", CHART_wrapper);
         var part_rise = addGroup("上涨", CHART);
         var part_fall = addGroup("下跌", CHART);
@@ -112,14 +111,14 @@ var onRun = function(context) {
         var priceMin = getMaxNum(valueBoundaryTestAry, "min");
 
         //Build the chart
-        var CHARTK = buildCandlesChart(drawArea);
+        var CHARTK = buildCandlesChart(drawArea1);
 
         //Build the average line
         if(averageLineCheck.state())
         {
-            var ma5 = buildAverageLine(drawArea, 5, hexToMSColor(color_ma5), CHART_wrapper, "MA5");
-            var ma10 = buildAverageLine(drawArea, 10, hexToMSColor(color_ma10), CHART_wrapper, "MA10");
-            var ma30 = buildAverageLine(drawArea, 30, hexToMSColor(color_ma30), CHART_wrapper, "MA30");
+            var ma5 = buildAverageLine(drawArea1, 5, hexToMSColor(color_ma5), CHART_wrapper, "MA5");
+            var ma10 = buildAverageLine(drawArea1, 10, hexToMSColor(color_ma10), CHART_wrapper, "MA10");
+            var ma30 = buildAverageLine(drawArea1, 30, hexToMSColor(color_ma30), CHART_wrapper, "MA30");
         }
     }
 
@@ -193,11 +192,37 @@ var onRun = function(context) {
                 var newPY = Math.round(dataDrawH - (calc/days - priceMin) * yScale);
             }
 
-            //log(newPY)
+            log(newPY)
             avgLineAry.push({x:newPX, y:newPY})
         }
 
         drawLine(avgLineAry, color, parent, name)
     }
+
+    //==============================================
+
+
+
+    /*
+    function drawLabelY(valMin, valMax, num, drawHeight){
+        var labelContainer = new createjs.Container();
+
+        var labelRange = valMax - valMin;
+        for(var i=0; i<num; i++){
+            var newLabel = drawLabel(0, 0, (valMin+i*labelRange/num).toFixed(2));
+
+            if(i == 0){
+                newLabel.y = drawHeight - fontSize;
+            }else{
+                newLabel.y = drawHeight - i*(drawHeight/(num-1));
+            }
+
+            labelContainer.addChild(newLabel);
+        }
+
+        labelContainer.name = "labelY";
+        return labelContainer;
+    }
+    */
 
 };

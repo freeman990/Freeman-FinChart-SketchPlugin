@@ -11,13 +11,6 @@ function addGroup(name, parent){
     return group;
 }
 
-function addArtboard(width, height, page){
-    var artboard = MSArtboardGroup.alloc().initWithFrame_(NSMakeRect(page.originForNewArtboard().x, page.originForNewArtboard().y, width, height));
-
-    page.addLayers([artboard]);
-    return artboard;
-}
-
 
 //===============================================
 //=====     Draw Rectangle with x,y,w,h     =====
@@ -34,17 +27,16 @@ function drawBox(x, y, width, height, color, parent, radius, name) {
 
     //newRect.cornerRadiusFloat = radius;
     rectLayer.setName(name);
-    rectLayer.style().addStylePartOfType(0);
-    rectLayer.style().fills()[0].setColor(hexToMSColor(color));
+    var fill = rectLayer.style().addStylePartOfType(0);
+    fill.color = hexToMSColor(color);
 
     parent.addLayers([rectLayer]);
-    rectLayer.resizeToFitChildrenWithOption(0);
 
     //Add the newly created layer to selection to update frame & make next draw pos right
     //doc.currentPage().deselectAllLayers();
     //rectLayer.setIsSelected(true);
 
-    return rectLayer;
+    return(rectLayer);
 }
 
 //===============================================
@@ -71,7 +63,6 @@ function drawLine(dotAry, color, parent, name)
     layerStyle.setPosition(0);
 
     parent.addLayers([lineLayer]);
-    lineLayer.resizeToFitChildrenWithOption(0);
 
     return lineLayer;
 }
