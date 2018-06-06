@@ -1,0 +1,161 @@
+*{
+    overflow: hidden;
+}
+body,
+html {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+    background: #ececec;
+    border-top: 1px solid #aaa;
+
+}
+.hidden {
+    display: none;
+}
+.wrapper {
+    margin: 24px auto;
+    width: 400px;
+}
+h2 {
+    font-size: 11px;
+    color: #888;
+    font-weight: normal;
+    margin: 0 0 20px 0;
+}
+
+
+
+#title {
+    margin: 20px auto;
+    width: 209px;
+    height: 26px;
+    font-size: 0;
+    text-indent: -99999px;
+    font-weight: bold;
+    text-align: center;
+    background: url(Assets/logo.png) no-repeat center
+}
+
+#modeSelection {
+    width: 280px;
+    height: 86px;
+    background: #dbdbdb;
+    border:1px solid #979797;
+    margin: 0 auto;
+}
+#modeSelection input {
+    display: none;
+}
+#modeSelection label {
+    display: block;
+    width: 50%;
+    height: 100%;
+    float: left;
+    background: #D8D8D8 url(#) no-repeat center 15px;
+    color: #4D4F53;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+#modeSelection .left {
+    background-image: url(Assets/icn_mode_fit.png);
+}
+#modeSelection .right {
+    background-image: url(Assets/icn_mode_man.png);
+}
+#modeSelection .active {
+    background-color: #fff;
+    color: #2E3238;
+}
+
+#inputGroups {
+    width: 382px;
+    margin: 0 auto;
+    border: 1px solid #979797;
+    margin-top: -47px;
+    padding-top: 47px;
+}
+.ip_group {
+    clear: both;
+    width:310px;
+    margin: 25px auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+.ip_group label {
+    float: left;
+    padding: 14px 10px 14px 58px;
+    width: 44px;
+    background:#ececec url(#) no-repeat 8px 8px;
+    border-right: 1px solid #ccc;
+    color: #2E3238;
+    font-size:13px;
+    text-align:right;
+    vertical-align:middle;
+}
+    #icn_number {
+        background-image: url(Assets/icn_ip_amount.png);
+    }
+    #icn_gap {
+        background-image: url(Assets/icn_ip_gap.png);
+    }
+    #icn_width {
+        background-image: url(Assets/icn_ip_width.png);
+    }
+.ip_group input {
+    float: left;
+    width: 101px;
+    height: 44px;
+    padding: 0 0 0 14px;
+    border: none;
+    font-size: 20px;
+}
+.ip_afterInfo {
+    float: left;
+    border-radius: 15px;
+    width: 60px;
+    padding: 14px 10px 13px 0;
+    text-align: right;
+    font-size: 12px;
+    color: #888;
+}
+.ip_btnGroup {
+    margin: 24px auto 14px auto;
+    text-align: center;
+}
+.btn_submit {
+    width: 280px;
+    height: 48px;
+    font-size: 16px;
+    background: #2790fd;
+    color: #fff;
+    border: 1px solid #1675fd;
+}
+.btn_submit:hover {
+    background: #0867C8;
+
+}
+.clearfix {
+    clear: both;
+}
+
+#branding {
+    display: block;
+    width: 120px;
+    padding: 10px;
+    margin: 0 auto;
+    border-radius: 6px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 11px;
+    color: #aaa;
+    text-decoration: none;
+}
+#branding:hover {
+    color: #EA195C;
+    background: #fff
+}

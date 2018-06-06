@@ -22,7 +22,7 @@ function drawBox(x, y, width, height, color, parent, radius, name) {
     name = name || "Rectangle";
 
     var newRect = MSRectangleShape.new();
-    newRect.frame = MSRect.rectWithRect(NSMakeRect(x, y, width, height));
+    newRect.frame = MSRect.rectWithRect(CGRectMake(x, y, width, height));
     var rectLayer = MSShapeGroup.shapeWithPath(newRect);
 
     //newRect.cornerRadiusFloat = radius;
@@ -31,10 +31,6 @@ function drawBox(x, y, width, height, color, parent, radius, name) {
     fill.color = hexToMSColor(color);
 
     parent.addLayers([rectLayer]);
-
-    //Add the newly created layer to selection to update frame & make next draw pos right
-    //doc.currentPage().deselectAllLayers();
-    //rectLayer.setIsSelected(true);
 
     return(rectLayer);
 }
@@ -55,7 +51,10 @@ function drawLine(dotAry, color, parent, name)
         linePath.lineToPoint(CGPointMake(dotAry[i].x, dotAry[i].y))
     }
 
-    var lineLayer = MSShapeGroup.shapeWithBezierPath(linePath);
+    //Sketch 50 fix
+    var msLinePath = MSPath.pathWithBezierPath(linePath)
+    var lineLayer = MSShapeGroup.shapeWithBezierPath(msLinePath);
+
     lineLayer.setName(name);
     var layerStyle = lineLayer.style().addStylePartOfType(1);
     layerStyle.setColor(color);

@@ -97,7 +97,7 @@ function darwVolChart(dataAry, valMax, valMin, drawArea, priceData, groupAry){
 
 		if(priceData[i]-priceData[i-1] > 0){
 			drawLine(pntAry, hexToMSColor("#F64843"), groupAry[0], "vol");
-		}else {
+		} else {
 			drawLine(pntAry, hexToMSColor("#5C9F34"), groupAry[1], "vol");
 		}
 
@@ -109,6 +109,7 @@ function buildLineChart(){
 	var volFolder = addGroup("Vol", root);
 	var volRise = addGroup("rise", volFolder);
 	var volFall = addGroup("fall", volFolder);
+
 
 	var pricePnts = getPriceChartPoints(priceDataAry, priceBorderMax, priceBorderMin, drawArea);
 	var avgPnts = getAverageChartPoints(priceDataAry, priceBorderMax, priceBorderMin, drawArea, 10);

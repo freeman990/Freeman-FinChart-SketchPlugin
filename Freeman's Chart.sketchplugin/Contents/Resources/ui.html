@@ -1,14 +1,158 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html>
 <head>
-  <style type="text/css">
-    *{padding: 0; margin: 0;}
-  </style>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <form>
-    <input type="textfield" placeholder="Enter something..."/>
-    <a href="#">test</a>
-  </form>
+	<div class="wrapper">
+		<div id="title">Candlestick Chart</div>
+
+		<div id="modeSelection">
+			<input id="md_screen" type="radio" name="mode" value="md_screen" checked='true'><label for="md_screen" class="left active"><br><br><br><br>Fit Artboard</label>
+			<input id="md_object" type="radio" name="mode" value="md_object" style='margin-left:20px'><label for="md_object" class="right"><br><br><br><br>Manual</label>
+		</div>
+
+		<div id="inputGroups">
+			<div id="f_mode_screen">
+				<div class="ip_group">
+					<label class="ip_label" id="icn_number" for="ip_barNum_scr">Total #</label>
+					<input id="ip_barNum_scr" type="text" >
+					<span class="ip_afterInfo">to fit</span>
+					<div class="clearfix"></div>
+				</div>
+				<div class="ip_group">
+					<label class="ip_label" id="icn_gap" for="ip_barGap_scr">Gutter</label>
+					<input id="ip_barGap_scr" type="text" >
+					<span class="ip_afterInfo">px</span>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			<div id="f_mode_object" class="hidden">
+				<div class="ip_group">
+					<label class="ip_label" id="icn_gap" for="ip_barGap_scr">Gutter</label>
+					<input id="ip_barGap_obj" type="text">
+					<span class="ip_afterInfo">px</span>
+					<div class="clearfix"></div>
+				</div>
+				<div class="ip_group">
+					<label class="ip_label" id="icn_width" for="ip_barGap_scr">Width</label>
+					<input id="ip_barSize_obj" type="text">
+					<span class="ip_afterInfo">px</span>
+					<div class="clearfix"></div>
+				</div>
+				<div class="ip_group">
+					<label class="ip_label" id="icn_number" for="ip_barNum_scr">Total #</label>
+					<input id="ip_barNum_obj" type="text" >
+					<span class="ip_afterInfo" id="barNum_recom_info">to fit</span>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="ip_btnGroup">
+			<button class="btn_submit" onclick="drawChart()">Draw Chart</button>
+		</div>
+
+		<a id="branding" href="http://www.zcodesign.net" target="_blank">Made in ZOC Design</a>
+
+	</div>
 </body>
+<script>
+	var _artbWidth = null;
+	var _dataLength = null;
+	var _defaultGap = 1;
+	var _defaultWidth = 5;
+	var selectedModeID = "md_screen";
+
+	//UI behaviour
+	modeDiv = $('#modeSelection')
+	modeDiv.on('change',function(){
+		selectedModeID = $('#modeSelection :checked').val()
+		switchMode(selectedModeID)
+	})
+
+	$('#ip_barGap_obj').on('change',function(){
+		updateObjForm_num();
+	})
+	$('#ip_barSize_obj').on('change',function(){
+		updateObjForm_num();
+	})
+
+	// ===============
+	// = Functions
+	// ===============
+	function drawChart(){
+		switch (selectedModeID){
+			case "md_screen":
+				var barGap = $('#ip_barGap_scr').val()
+				var barNum = $('#ip_barNum_scr').val()
+				updateHash('drawByScreen&gap='+barGap+'&num='+barNum)
+				return
+			case "md_object":
+				var barGap = $('#ip_barGap_obj').val()
+				var barSize = $('#ip_barSize_obj').val()
+				var barNum = $('#ip_barNum_obj').val()
+				updateHash('drawByObject&gap='+barGap+'&siz='+barSize+'&num='+barNum)
+				return
+			default:
+				return
+		}
+	}
+
+	function updateHash(hash) {
+		//We can send a simple command or a command with a parameter and value
+		//You can extend this function to send multiple values. script.js will parse
+		//all the values and expose them in the hash object so you can use them
+		//new Date is there just to make sure the url is alwasy different
+		window.location.hash = hash+'&date=' +new Date().getTime();
+		return false
+	}
+
+	//We can call Javascript functions from Sketch and set parameters from there
+	//This function is never called in this file but the sketch.js can call it and update the UI
+	function initHTMLData(artbW, dataNum) {
+		_artbWidth = artbW;
+		_dataLength = dataNum;
+		initScrForm();
+		initObjForm();
+	}
+
+	function initScrForm(){
+		$('#ip_barGap_scr').val(_defaultGap);
+		$('#ip_barNum_scr').val(_dataLength);
+	}
+
+	function initObjForm(){
+		$('#ip_barGap_obj').val(_defaultGap);
+		$('#ip_barSize_obj').val(_defaultWidth);
+		updateObjForm_num();
+	}
+	function updateObjForm_num(){
+		var newNum = calcObjNum($('#ip_barSize_obj').val(), $('#ip_barGap_obj').val())
+		$('#ip_barNum_obj').val(newNum);
+		$('#barNum_recom_info').html(newNum+' to fit');
+	}
+
+	function switchMode(modeVal){
+		if(modeVal == 'md_screen'){
+			$('#f_mode_screen').toggleClass('hidden');
+			$('#f_mode_object').toggleClass('hidden');
+		}else if(modeVal == 'md_object'){
+			$('#f_mode_screen').toggleClass('hidden');
+			$('#f_mode_object').toggleClass('hidden');
+		}
+		$('#modeSelection .left').toggleClass('active');
+		$('#modeSelection .right').toggleClass('active');
+	}
+
+	function calcObjNum(width, gap){
+		//var _artbWidth = 375;
+		width = Number(width) || _defaultWidth;
+		gap = Number(gap) || _defaultGap;
+		return Math.floor( (_artbWidth - gap) / ( width + gap ) );
+	}
+
+</script>
 </html>

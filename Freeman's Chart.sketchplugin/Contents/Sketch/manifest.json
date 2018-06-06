@@ -1,15 +1,16 @@
 {
   "identifier" : "com.freeman.sketch.fin-chart",
-  "version" : "1.2.0",
-  "description" : "Draw CandleStick & line chart in the Sketch, with built-in real data.",
+  "version" : "1.3.0",
+  "description" : "Draw candlestick and line chart in the Sketch, with built-in real data.",
   "authorEmail" : "freeman990@gmail.com",
   "name" : "Freeman's FinChart",
+  "icon" : "icon.png",
   "author" : "Freeman Sun",
 
   "commands" : [
     {
       "script" : "chart-candle.js",
-      "name" : "K线图 (CandleStick Chart)",
+      "name" : "K线图 (Candlestick Chart)",
       "handlers" : {
         "run" : "onRun"
       },
@@ -22,14 +23,6 @@
         "run" : "onRun"
       },
       "identifier" : "com.freeman.sketch.fin-chart-timeline"
-    },
-    {
-      "script" : "test.js",
-      "name" : "Test",
-      "handlers" : {
-        "run" : "onRun"
-      },
-      "identifier" : "com.freeman.sketch.fin-chart-test"
     }
   ],
 
@@ -37,7 +30,6 @@
     "items" : [
       "com.freeman.sketch.fin-chart",
       "com.freeman.sketch.fin-chart-timeline",
-      "com.freeman.sketch.fin-chart-test"
     ],
     "title" : "Freeman's FinChart"
   }

@@ -1,228 +1,302 @@
+@import "MochaJSDelegate.js";
 @import "share.js";
 @import "data.js";
 
 var onRun = function(context) {
     log("=======================================================================");
-    log("=======================================================================");
     log("======================       RUN THE CHART        =====================");
     log("=======================================================================");
-    log("=======================================================================");
 
-    var doc = context.document;
+    var doc = updateContext().document;
+    var userDefaults = NSUserDefaults.standardUserDefaults();
     var page = doc.currentPage();
-    var artb = page.currentArtboard();
 
-    var drawArea1 = {w:1008, h:188};
-    var color_rise = "#F64843";
-    var color_fall = "#5C9F34";
-    var color_grid = "#2d2d2d";
-    var color_font = "#555";
-    var color_v = "#6DC8EA"
-    var color_ma5 = "#FFDE26";
-    var color_ma10 = "#3AACE8";
-    var color_ma30 = "#EFB7B9";
-    var vBarWidth = 2;
-    var yPadding = 10;
-    var gridHNum = 4;
-    var labelNum = 4;
-    var fontSize = 10;
+    //=========== COLOR ===================
+    var chartTheme = {}
+        chartTheme.rise = "#F64843";
+        chartTheme.fall = "#5C9F34";
+        chartTheme.grid = "#2d2d2d";
+        chartTheme.font = "#555";
+        chartTheme.v = "#6DC8EA"
+        chartTheme.ma5 = "#FFDE26";
+        chartTheme.ma10 = "#3AACE8";
+        chartTheme.ma30 = "#EFB7B9";
 
     //=========== MAIN ===================
-    var xOffset;
-    var barNum = data.length;
-    var barWidth;
-    var barGap = 1;
+    var xOffset = 0;
+    var maxAverage = 30;
     var stickWidth = 1;
     var dataStartID = 0;
     var drawAverageLine = true;
 
+    //=========== DATA ===================
+    var chartData = jsData;
+    var dataLength = chartData.length - maxAverage;
 
-    xOffset = 0//Math.max(labelK.getBounds().width, labelV.getBounds().width) + 2;
-
-    if(artb != undefined)
-    {
-        drawArea1 = {w:artb.frame().width(), h:artb.frame().height()}
+    if (context.selection.count() > 0 && context.selection[0].class() == 'MSArtboardGroup'){
+        //Artboard Selected
+        var drawArea = {
+            w:context.selection[0].frame().width()+xOffset,
+            h:context.selection[0].frame().height()
+        }
+        openUI(context, drawArea, chartData, dataLength, chartTheme)
+    }else{
+        alert('Please Select an Artboard')
     }
 
 
-    var dialog = COSAlertWindow.alloc().init();
-    iconImage = NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("test.png").path());
-    dialog.setIcon(iconImage);
-    dialog.setMessageText("创建K线图");
-    dialog.setInformativeText("根据所选 Artboard 尺寸，按以下参数生成 K 线图。\n注意：为了像素对齐所以生成图表宽度可能不满或超过画布宽度。");
-
-    //Main UI
-    dialog.addTextLabelWithValue("柱间距(px): ");
-    var barGapSetting = NSTextField.alloc().initWithFrame(NSMakeRect(0, 0, 100, 24));
-    barGapSetting.setStringValue(barGap);
-    barGapSetting.setPlaceholderString("默认 " + barGap);
-    dialog.addAccessoryView(barGapSetting);
-
-    dialog.addTextLabelWithValue("柱数量(最大 "+(data.length-30)+"): ");
-    var barNumSetting = NSTextField.alloc().initWithFrame(NSMakeRect(0, 0, 100, 24));
-    barNumSetting.setStringValue(data.length-30);
-    barNumSetting.setPlaceholderString("最大 " + (data.length-30));
-    dialog.addAccessoryView(barNumSetting);
-
-    var averageLineCheck = NSButton.alloc().initWithFrame(NSMakeRect(0,0,100,24));
-    averageLineCheck.state = NSOnState;
-    averageLineCheck.title = "绘制均线"
-    averageLineCheck.setButtonType(NSSwitchButton);
-    averageLineCheck.setBezelStyle(0);
-    dialog.addAccessoryView(averageLineCheck);
-
-    dialog.addButtonWithTitle("OK");
-    dialog.addButtonWithTitle("Cancel");
-
-    var responseCode = dialog.runModal();
-
-    if (responseCode == "1000"){
-
-        var newBarGap = parseFloat(barGapSetting.stringValue());
-        var newBarNum = parseFloat(barNumSetting.stringValue());
-
-        barGap = newBarGap;
-        barNum = newBarNum;
-
-        var CHART_wrapper = addGroup("K线图", context.document.currentPage().currentArtboard());
-        var CHART = addGroup("图表", CHART_wrapper);
-        var part_rise = addGroup("上涨", CHART);
-        var part_fall = addGroup("下跌", CHART);
-        var stick_rise = addGroup("线", part_rise);
-        var stick_fall = addGroup("线", part_fall);
-        var bar_rise = addGroup("块", part_rise);
-        var bar_fall= addGroup("块", part_fall);
-
-        if(barNum >= data.length){
-            dataStartID = 0;
-        }
-        else{
-            dataStartID = data.length - barNum;
-        }
-
-        var valueBoundaryTestAry = [];
-
-        for(var i=dataStartID; i<data.length; i++)
-        {
-            valueBoundaryTestAry.push(data[i][indexHigh]);
-            valueBoundaryTestAry.push(data[i][indexLow]);
-        }
-        var priceMax = getMaxNum(valueBoundaryTestAry, "max");
-        var priceMin = getMaxNum(valueBoundaryTestAry, "min");
-
-        //Build the chart
-        var CHARTK = buildCandlesChart(drawArea1);
-
-        //Build the average line
-        if(averageLineCheck.state())
-        {
-            var ma5 = buildAverageLine(drawArea1, 5, hexToMSColor(color_ma5), CHART_wrapper, "MA5");
-            var ma10 = buildAverageLine(drawArea1, 10, hexToMSColor(color_ma10), CHART_wrapper, "MA10");
-            var ma30 = buildAverageLine(drawArea1, 30, hexToMSColor(color_ma30), CHART_wrapper, "MA30");
-        }
-    }
-
-    log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     log("^^^^^^^^^^^^^^^^^^^^^^        END THE RUN         ^^^^^^^^^^^^^^^^^^^^^");
     log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-    log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
-    //=========== Draw the CHART ===================
-    function buildCandlesChart(size){
-        size = size || {w:100, h:100};
-        var dataDrawW = Math.round(size.w - xOffset);
-        var dataDrawH = size.h - 0//fontSize;
-
-        var yScale = dataDrawH/(priceMax - priceMin);
-
-        barWidth = Math.round((dataDrawW/barNum)-barGap);
-
-        //DRAW CHART
-        for(var i=dataStartID; i<data.length; i++)
-        {
-            var dataItem = data[i];
-            var order = i-dataStartID;
-
-            var newBY = Math.round(dataDrawH - (dataItem[indexOpen] - priceMin) * yScale);
-            var newSY = Math.round(dataDrawH - (dataItem[indexHigh] - priceMin) * yScale);
-
-            var newBX = Math.round(order * (barWidth+barGap));
-            var newSX = Math.floor(barWidth/2) + newBX;
-
-            var newBH = Math.round((dataItem[indexClose] - dataItem[indexOpen]) * yScale*-1);
-            if(newBH == 0){
-                newBH = 1;
-            }
-
-            var newSH = Math.round((dataItem[indexHigh] - dataItem[indexLow]) * yScale);
-
-            if(dataItem[indexClose] - dataItem[indexOpen]>=0){
-                var newColor = color_rise;
-                var bar = drawBox(newBX, newBY, barWidth, newBH, newColor, bar_rise, 0, "bar_rise");
-                var stick = drawBox(newSX, newSY, stickWidth, newSH, newColor, stick_rise, 0, "stick_rise");
-            }else{
-                var newColor = color_fall;
-                var bar = drawBox(newBX, newBY, barWidth, newBH, newColor, bar_fall, 0, "bar_fall");
-                var stick = drawBox(newSX, newSY, stickWidth, newSH, newColor, stick_fall, 0, "stick_fall");
-            }
-        }
-    }
-
-    function buildAverageLine(size, days, color, parent, name)
-    {
-        size = size || {w:100, h:100};
-        var dataDrawW = Math.round(size.w - xOffset);
-        var dataDrawH = size.h - 0//fontSize;
-        var yScale = dataDrawH/(priceMax - priceMin);
-
-        var avgLineAry = [];
-        for(var i=dataStartID; i<data.length; i++)
-        {
-            var dataItem = data[i];
-            var order = i-dataStartID;
-
-            var newPX = Math.floor(barWidth/2) + Math.round(order * (barWidth+barGap));
-            var calc = 0;
-            if(dataStartID - days >= 0){
-                for(var k=0; k<days; k++)
-                {
-                    calc += data[i-k][indexClose];
-                }
-                var newPY = Math.round(dataDrawH - (calc/days - priceMin) * yScale);
-            }
-
-            log(newPY)
-            avgLineAry.push({x:newPX, y:newPY})
-        }
-
-        drawLine(avgLineAry, color, parent, name)
-    }
-
-    //==============================================
-
-
-
-    /*
-    function drawLabelY(valMin, valMax, num, drawHeight){
-        var labelContainer = new createjs.Container();
-
-        var labelRange = valMax - valMin;
-        for(var i=0; i<num; i++){
-            var newLabel = drawLabel(0, 0, (valMin+i*labelRange/num).toFixed(2));
-
-            if(i == 0){
-                newLabel.y = drawHeight - fontSize;
-            }else{
-                newLabel.y = drawHeight - i*(drawHeight/(num-1));
-            }
-
-            labelContainer.addChild(newLabel);
-        }
-
-        labelContainer.name = "labelY";
-        return labelContainer;
-    }
-    */
 
 };
+
+
+//=========== Draw the CHART ===================
+
+function drawCandleChart(artboard, drawArea, barNum, barWidth, barGap, chartData, chartTheme){
+    var stickWidth = 1;
+    barNum = (barNum > chartData.length) ? chartData.length : barNum
+    log(barNum)
+    //Init layerGroup structure
+    var CANDLE_group = addGroup("CandleStick Chart", artboard);
+        var CHART_group = addGroup("ChartItem", CANDLE_group);
+            var rise_group = addGroup("RISE", CHART_group);
+                var rise_bar = addGroup("Bar", rise_group);
+                var rise_stick = addGroup("Stick", rise_group);
+            var fall_group = addGroup("FALL", CHART_group);
+                var fall_bar = addGroup("Bar", fall_group);
+                var fall_stick = addGroup("Stick", fall_group);
+
+    //Define price boundary
+    var valueBoundaryTestAry = [];
+    for(var j = chartData.length - barNum; j<chartData.length; j++)
+    {
+        valueBoundaryTestAry.push(chartData[j][indexHigh]);
+        valueBoundaryTestAry.push(chartData[j][indexLow]);
+    }
+    var priceMax = getMaxNum(valueBoundaryTestAry, "max");
+    var priceMin = getMaxNum(valueBoundaryTestAry, "min");
+    var yScale = drawArea.h/(priceMax - priceMin);
+    var startID = chartData.length - barNum
+
+    //Draw each candleStick
+    for(var i=startID; i<chartData.length; i++)
+    {
+        var dataItem = chartData[i];
+
+        var newBY = Math.round(drawArea.h - (dataItem[indexOpen] - priceMin) * yScale);
+        var newSY = Math.round(drawArea.h - (dataItem[indexHigh] - priceMin) * yScale);
+
+        var xOrder = i - startID;
+        var newBX = Math.round(xOrder * (barWidth+barGap));
+        var newSX = Math.floor(barWidth/2) + newBX;
+        var newBH = Math.round((dataItem[indexClose] - dataItem[indexOpen]) * yScale*-1);
+        if(newBH == 0){
+            newBH = 1;
+        }
+
+        var newSH = Math.round((dataItem[indexHigh] - dataItem[indexLow]) * yScale);
+
+        if(dataItem[indexClose] - dataItem[indexOpen]>=0){
+            var newColor = chartTheme.rise;
+            var bar = drawBox(newBX, newBY, barWidth, newBH, newColor, rise_bar, 0, "bar_rise");
+            var stick = drawBox(newSX, newSY, stickWidth, newSH, newColor, rise_stick, 0, "stick_rise");
+        }else{
+            var newColor = chartTheme.fall;
+            var bar = drawBox(newBX, newBY, barWidth, newBH, newColor, fall_bar, 0, "bar_fall");
+            var stick = drawBox(newSX, newSY, stickWidth, newSH, newColor, fall_stick, 0, "stick_fall");
+        }
+    }
+    rise_group.resizeToFitChildrenWithOption(0)
+    rise_bar.resizeToFitChildrenWithOption(0)
+
+    fall_bar.resizeToFitChildrenWithOption(0)
+    fall_stick.resizeToFitChildrenWithOption(0)
+
+    rise_stick.resizeToFitChildrenWithOption(0)
+    fall_group.resizeToFitChildrenWithOption(0)
+
+    CANDLE_group.resizeToFitChildrenWithOption(0)
+    CHART_group.resizeToFitChildrenWithOption(0)
+
+    log("haha")
+}
+
+function buildAverageLine(drawArea, days, color, parent, name)
+{
+    var yScale = drawArea.h/(priceMax - priceMin);
+
+    var avgLineAry = [];
+    for(var i=dataStartID; i<chartData.length; i++)
+    {
+        var dataItem = chartData[i];
+        var order = i-dataStartID;
+
+        var newPX = Math.floor(barWidth/2) + Math.round(order * (barWidth+barGap));
+        var calc = 0;
+        if(dataStartID - days >= 0){
+            for(var k=0; k<days; k++)
+            {
+                calc += chartData[i-k][indexClose];
+            }
+            var newPY = Math.round(drawArea.h - (calc/days - priceMin) * yScale);
+        }
+        avgLineAry.push({x:newPX, y:newPY})
+    }
+
+    drawLine(avgLineAry, color, parent, name)
+}
+
+
+//From HTML Webview Template
+function updateContext() {
+    var doc = NSDocumentController.sharedDocumentController().currentDocument();
+
+    return {
+        document: doc
+    }
+}
+
+function parseHash(aURL) {
+    aURL = aURL;
+    var vars = {};
+    var hashes = aURL.slice(aURL.indexOf('#') + 1).split('&');
+
+    for(var i = 0; i < hashes.length; i++) {
+        var hash = hashes[i].split('=');
+
+        if(hash.length > 1) {
+            vars[hash[0].toString()] = hash[1];
+        } else {
+            vars[hash[0].toString()] = null;
+        }
+    }
+
+    return vars;
+}
+
+
+function alert(message) {
+    var alert = NSAlert.alloc().init()
+    alert.setMessageText(message)
+    alert.runModal();
+}
+
+function parseHashBoolean(str){
+    if(str == 'true'){
+        return true
+    }else{
+        return false
+    }
+}
+
+function openUI(context, drawArea, chartData, dataLength, chartTheme){
+    //================
+    // HTML WEB VIEW TEMPLATE by jacopocolo /Thanks guys, this template really helps.
+    //================
+    var title = "Generate Candlestick Chart";
+    var identifier = "com.jacopocolo.webviewtemplate";
+    var threadDictionary = NSThread.mainThread().threadDictionary();
+
+    if (threadDictionary[identifier]) {
+          return;
+    }
+
+    var windowWidth =  448, windowHeight = 566;
+    var webViewWindow = NSPanel.alloc().init();
+    webViewWindow.setFrame_display(NSMakeRect(0, 0, windowWidth, windowHeight), true);
+    webViewWindow.setStyleMask(NSTexturedBackgroundWindowMask | NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask);
+
+    //Uncomment the following line to define the app bar color with an NSColor
+    //webViewWindow.setBackgroundColor(NSColor.whiteColor());
+    webViewWindow.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
+    webViewWindow.standardWindowButton(NSWindowZoomButton).setHidden(true);
+    webViewWindow.setTitle(title);
+    webViewWindow.setTitlebarAppearsTransparent(true);
+    webViewWindow.becomeKeyWindow();
+    webViewWindow.setLevel(NSFloatingWindowLevel);
+    threadDictionary[identifier] = webViewWindow;
+    COScript.currentCOScript().setShouldKeepAround_(true);
+
+    //Add Web View to window
+        var webView = WebView.alloc().initWithFrame(NSMakeRect(0, 0, windowWidth, windowHeight - 24));
+        webView.setAutoresizingMask(NSViewWidthSizable|NSViewHeightSizable);
+        var windowObject = webView.windowScriptObject();
+        var delegate = new MochaJSDelegate({
+
+            "webView:didFinishLoadForFrame:" : (function(webView, webFrame) {
+                //We call this function when we know that the webview has finished loading
+                //It's a function in the UI and we run it with a parameter coming from the updated context
+                windowObject.evaluateWebScript("initHTMLData("+drawArea.w+","+dataLength+")");
+            }),
+
+            //To get commands from the webView we observe the location hash: if it changes, we do something
+            "webView:didChangeLocationWithinPageForFrame:" : (function(webView, webFrame) {
+                var locationHash = windowObject.evaluateWebScript("window.location.hash");
+                //The hash object exposes commands and parameters
+                //In example, if you send updateHash('add','artboardName','Mark')
+                //You’ll be able to use hash.artboardName to return 'Mark'
+                var hash = parseHash(locationHash);
+                log(hash);
+                //We parse the location hash and check for the command we are sending from the UI
+                //If the command exist we run the following code
+                if (hash.hasOwnProperty('update')) {
+                    //In example updating the artboard count based on the current contex.
+                    //The evaluateWebScript function allows us to call a function from the UI.html with parameters
+                    //coming from Sketch
+                    //windowObject.evaluateWebScript("updateInput("+updateContext().document.currentPage().artboards().count()+");");
+                }
+                else if(hash.hasOwnProperty('drawByScreen')){
+                    var barNum = Number(hash.num);
+                    var barGap = Number(hash.gap);
+                    var barWidth = 0;
+                    var px = parseHashBoolean(hash.px);
+                    if(px){
+                        barWidth = Math.ceil((drawArea.w/barNum)-barGap);
+                    } else{
+                        barWidth = (drawArea.w/barNum)-barGap;
+                    }
+
+                    ////DRAW by screen
+                    drawCandleChart(context.selection[0], drawArea, barNum, barWidth, barGap, chartData, chartTheme)
+
+                    //Webview cleanup
+                    threadDictionary.removeObjectForKey(identifier);
+                    webViewWindow.close();
+                }
+                else if(hash.hasOwnProperty('drawByObject')){
+                    var barNum = Number(hash.num);
+                    var barGap = Number(hash.gap);
+                    var barWidth = Number(hash.siz);
+
+                    //DRAW by object
+                    drawCandleChart(context.selection[0], drawArea, barNum, barWidth, barGap, chartData, chartTheme)
+
+                    //Webview cleanup
+                    threadDictionary.removeObjectForKey(identifier);
+                    webViewWindow.close();
+                }
+                else if (hash.hasOwnProperty('close')) {
+                    //We can also call commands on the window itself, like closing the window
+                    //This can be run aftr other commands, obviously
+                    threadDictionary.removeObjectForKey(identifier);
+                    webViewWindow.close();
+                }
+            })
+        });
+
+        webView.setFrameLoadDelegate_(delegate.getClassInstance());
+        webView.setMainFrameURL_(context.plugin.urlForResourceNamed("ui.html").path());
+        webViewWindow.contentView().addSubview(webView);
+        webViewWindow.center();
+        webViewWindow.makeKeyAndOrderFront(nil);
+        // Define the close window behaviour on the standard red traffic light button
+        var closeButton = webViewWindow.standardWindowButton(NSWindowCloseButton);
+        closeButton.setCOSJSTargetFunction(function(sender) {
+          COScript.currentCOScript().setShouldKeepAround(false);
+          threadDictionary.removeObjectForKey(identifier);
+          webViewWindow.close();
+        });
+        closeButton.setAction("callAction:");
+}
