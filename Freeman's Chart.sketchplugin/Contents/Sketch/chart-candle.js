@@ -57,7 +57,7 @@ var onRun = function(context) {
 function drawCandleChart(artboard, drawArea, barNum, barWidth, barGap, chartData, chartTheme){
     var stickWidth = 1;
     barNum = (barNum > chartData.length) ? chartData.length : barNum
-    log(barNum)
+
     //Init layerGroup structure
     var CANDLE_group = addGroup("CandleStick Chart", artboard);
         var CHART_group = addGroup("ChartItem", CANDLE_group);
@@ -108,19 +108,7 @@ function drawCandleChart(artboard, drawArea, barNum, barWidth, barGap, chartData
             var stick = drawBox(newSX, newSY, stickWidth, newSH, newColor, fall_stick, 0, "stick_fall");
         }
     }
-    rise_group.resizeToFitChildrenWithOption(0)
-    rise_bar.resizeToFitChildrenWithOption(0)
-
-    fall_bar.resizeToFitChildrenWithOption(0)
-    fall_stick.resizeToFitChildrenWithOption(0)
-
-    rise_stick.resizeToFitChildrenWithOption(0)
-    fall_group.resizeToFitChildrenWithOption(0)
-
-    CANDLE_group.resizeToFitChildrenWithOption(0)
-    CHART_group.resizeToFitChildrenWithOption(0)
-
-    log("haha")
+    log("drawCandleChart completed")
 }
 
 function buildAverageLine(drawArea, days, color, parent, name)

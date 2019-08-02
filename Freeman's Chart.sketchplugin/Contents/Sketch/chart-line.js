@@ -129,8 +129,8 @@ function buildLineChart(){
 	fill.color = hexToMSColor("#667788");
 	fill.setOpacity(0.2);
 
-	volFall.resizeToFitChildrenWithOption(0);
-	volRise.resizeToFitChildrenWithOption(0);
-	volFolder.resizeToFitChildrenWithOption(0);
-	root.resizeToFitChildrenWithOption(0);
+	volFall.optimalBoundingBox();
+	volRise.optimalBoundingBox();
+	volFolder.optimalBoundingBox();
+	root.optimalBoundingBox();
 }

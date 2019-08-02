@@ -1,6 +1,6 @@
 {
   "identifier" : "com.freeman.sketch.fin-chart",
-  "version" : "1.3.0",
+  "version" : "1.4.0",
   "description" : "Draw candlestick and line chart in the Sketch, with built-in real data.",
   "authorEmail" : "freeman990@gmail.com",
   "name" : "Freeman's FinChart",

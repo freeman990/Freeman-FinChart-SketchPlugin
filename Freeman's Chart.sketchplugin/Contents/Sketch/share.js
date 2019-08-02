@@ -21,12 +21,9 @@ function drawBox(x, y, width, height, color, parent, radius, name) {
     radius = radius || 0;
     name = name || "Rectangle";
 
-    var newRect = MSRectangleShape.new();
-    newRect.frame = MSRect.rectWithRect(CGRectMake(x, y, width, height));
-    var rectLayer = MSShapeGroup.shapeWithPath(newRect);
-
-    //newRect.cornerRadiusFloat = radius;
+    var rectLayer = MSShapeGroup.shapeWithRect(CGRectMake(x, y, width, height));
     rectLayer.setName(name);
+
     var fill = rectLayer.style().addStylePartOfType(0);
     fill.color = hexToMSColor(color);
 
@@ -50,10 +47,9 @@ function drawLine(dotAry, color, parent, name)
     {
         linePath.lineToPoint(CGPointMake(dotAry[i].x, dotAry[i].y))
     }
-
-    //Sketch 50 fix
     var msLinePath = MSPath.pathWithBezierPath(linePath)
-    var lineLayer = MSShapeGroup.shapeWithBezierPath(msLinePath);
+
+    var lineLayer = MSShapeGroup.layerWithPath(msLinePath);
 
     lineLayer.setName(name);
     var layerStyle = lineLayer.style().addStylePartOfType(1);
